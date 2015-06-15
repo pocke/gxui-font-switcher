@@ -68,6 +68,20 @@ abcdefghijklm
 	return text
 }
 
+func setFont(theme gxui.Theme, driver gxui.Driver, text gxui.TextBox, path string) error {
+	b, err := ioutil.ReadFile(path)
+	if err != nil {
+		return err
+	}
+	font, err := driver.CreateFont(b, 32)
+	if err != nil {
+		return err
+	}
+
+	text.SetFont(font)
+	return nil
+}
+
 func appMain(driver gxui.Driver) {
 	theme := dark.CreateTheme(driver)
 
@@ -79,16 +93,11 @@ func appMain(driver gxui.Driver) {
 	list := CreateList(theme)
 	splitter.AddChild(list)
 
-	b, err := ioutil.ReadFile("/usr/share/fonts/TTF/Ricty-Regular.ttf")
-	if err != nil {
-		panic(err)
-	}
-	font, err := driver.CreateFont(b, 32)
-	if err != nil {
-		panic(err)
-	}
 	text := CreateText(theme)
-	text.SetFont(font)
+	err := setFont(theme, driver, text, "/usr/share/fonts/TTF/Ricty-Regular.ttf")
+	if err != nil {
+		panic(err)
+	}
 
 	splitter.AddChild(text)
 
