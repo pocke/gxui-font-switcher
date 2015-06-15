@@ -8,6 +8,7 @@ import (
 	"bufio"
 	"bytes"
 	"io/ioutil"
+	"log"
 	"os/exec"
 	"strings"
 
@@ -91,14 +92,22 @@ func appMain(driver gxui.Driver) {
 	splitter.SetOrientation(gxui.Horizontal)
 
 	list := CreateList(theme)
-	splitter.AddChild(list)
-
 	text := CreateText(theme)
-	err := setFont(theme, driver, text, "/usr/share/fonts/TTF/Ricty-Regular.ttf")
-	if err != nil {
-		panic(err)
-	}
+	list.OnSelectionChanged(func(item gxui.AdapterItem) {
+		s, ok := item.(string)
+		if !ok {
+			log.Printf("%q is not string", item)
+			return
+		}
+		err := setFont(theme, driver, text, s)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		log.Printf("set %s", s)
+	})
 
+	splitter.AddChild(list)
 	splitter.AddChild(text)
 
 	layout := theme.CreateLinearLayout()
