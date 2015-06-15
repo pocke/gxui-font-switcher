@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os/exec"
+	"sort"
 	"strings"
 
 	"github.com/google/gxui"
@@ -36,6 +37,7 @@ func Fonts() ([]string, error) {
 	for key, _ := range fonts {
 		res = append(res, key)
 	}
+	sort.Sort(sort.StringSlice(res))
 	return res, nil
 }
 
